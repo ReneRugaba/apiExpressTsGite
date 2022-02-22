@@ -13,8 +13,9 @@ exports.UserController = void 0;
 const express_1 = require("express");
 const userService_1 = require("./../service/userService");
 class UserController {
-    constructor() {
+    constructor(logger) {
         this.index = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            this.logger.info("route #index() start!");
             res.json(yield this.userService.index());
         });
         this.getOneById = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -32,6 +33,7 @@ class UserController {
         });
         this.routesApp = () => {
             this.router.get('/', this.index);
+            this.router.get('/:id', this.getOneById);
             this.router.post('/', this.createUser);
             this.router.put('/:id', this.update);
             this.router.delete('/:id', this.remove);
@@ -39,6 +41,7 @@ class UserController {
         this.router = (0, express_1.Router)();
         this.userService = new userService_1.UserService();
         this.routesApp();
+        this.logger = logger;
     }
 }
 exports.UserController = UserController;

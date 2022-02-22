@@ -12,15 +12,26 @@ export class UserService {
 
     public index:()=>Promise<User[]|undefined> = async () =>{
 
-        return this.userRepository.find()
+        return await this.userRepository.find()
     }
 
     public findOneById:(id:number)=>Promise<User|undefined> =async (id:number)=>{
         return await this.userRepository.findOne(id)
     }
 
-    public createUser:(user:User)=>Promise<User> = async (user:User)=>{
-        return await this.userRepository.save(user)
+    public createUser:(user:User)=>Promise<User|undefined|string> = async (user:User):Promise<User|undefined|string>=>{
+        try {
+            return await this.userRepository.save(user)
+            
+        } catch (error) {
+            
+            if(error.routine=='_bt_check_unique'){
+                return new Error("Email already in use!").message     
+                
+            }
+            return new Error("Error occure!").message
+           
+        }
     }
 
     public removeUser:(userId:number)=>Promise<DeleteResult>= async(userId:number)=>{

@@ -15,13 +15,21 @@ const typeorm_1 = require("typeorm");
 class UserService {
     constructor() {
         this.index = () => __awaiter(this, void 0, void 0, function* () {
-            return this.userRepository.find();
+            return yield this.userRepository.find();
         });
         this.findOneById = (id) => __awaiter(this, void 0, void 0, function* () {
             return yield this.userRepository.findOne(id);
         });
         this.createUser = (user) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepository.save(user);
+            try {
+                return yield this.userRepository.save(user);
+            }
+            catch (error) {
+                if (error.routine == '_bt_check_unique') {
+                    return new Error("Email already in use!").message;
+                }
+                return new Error("Error occure!").message;
+            }
         });
         this.removeUser = (userId) => __awaiter(this, void 0, void 0, function* () {
             return yield this.userRepository.delete(userId);

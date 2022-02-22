@@ -2,6 +2,29 @@ import express, { Request, Response } from 'express'
 import { createConnection } from 'typeorm'
 import { UserController } from './controllers/userController'
 import cors from 'cors';
+import * as env from 'dotenv';
+import { Logger,ILogObject } from "tslog";
+import { appendFileSync } from "fs";
+
+function logToTransport(logObject: ILogObject) {
+  appendFileSync("logs.log", JSON.stringify(logObject) + "\n");
+}
+
+const logger: Logger = new Logger();
+logger.attachTransport(
+    {
+      silly: logToTransport,
+      debug: logToTransport,
+      trace: logToTransport,
+      info: logToTransport,
+      warn: logToTransport,
+      error: logToTransport,
+      fatal: logToTransport,
+    },
+    "debug"
+  );
+
+env.config()
 
 
 class Server {
@@ -37,15 +60,16 @@ class Server {
             type: "postgres",
             host: process.env.LOCALHOST_APP,
             database: process.env.DATA_BASE,
-            username: "root",
-            password: "postgres",
-            port: 5433,
+            username: process.env.USER_DB,
+            password: process.env.PASS_WORD,
+            port: Number(process.env.PORT_DB),
             entities: ['./build/entity/*.js'],
             synchronize: true
         })
-        this.userController=new UserController()
+        this.userController=new UserController(logger)
         
         this.app.get('/',(req: Request,resp:Response)=>{
+            logger.warn("I am a warn log with a json object:", { foo: "bar" });
             resp.send("hello")
         })
 

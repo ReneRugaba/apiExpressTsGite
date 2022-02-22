@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import { Logger } from "tslog";
 import { User } from "../entity/user";
 import { UserService } from "./../service/userService";
 
@@ -8,14 +9,17 @@ import { UserService } from "./../service/userService";
 export class UserController{
     public router:Router;
     private userService:UserService
+    private logger:Logger
 
-    constructor(){
+    constructor(logger:Logger){
         this.router = Router()
         this.userService=new UserService()
         this.routesApp()
+        this.logger= logger
     }
 
     public index = async (req:Request,res:Response)=>{
+        this.logger.info("route #index() start!")
         res.json(await this.userService.index())
     }
 
@@ -42,6 +46,7 @@ export class UserController{
 
     public routesApp =()=>{
         this.router.get('/',this.index)
+        this.router.get('/:id',this.getOneById)
         this.router.post('/',this.createUser)
         this.router.put('/:id',this.update)
         this.router.delete('/:id',this.remove)
