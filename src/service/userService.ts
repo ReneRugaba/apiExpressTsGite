@@ -1,13 +1,16 @@
 import { User } from "../entity/user";
 import { UserRepository } from "./../repository/userRepository";
 import { DeleteResult, getCustomRepository, UpdateResult } from "typeorm";
+import { Logger } from "tslog";
 
 
 export class UserService {
     private userRepository:UserRepository
+    private logger:Logger
 
-    constructor(){
+    constructor(logger:Logger){
         this.userRepository = getCustomRepository(UserRepository)
+        this.logger=logger
     }
 
     public index:()=>Promise<User[]|undefined> = async () =>{
@@ -21,10 +24,10 @@ export class UserService {
 
     public createUser:(user:User)=>Promise<User|undefined|string> = async (user:User):Promise<User|undefined|string>=>{
         try {
+            this.logger.info("user created in service")
             return await this.userRepository.save(user)
-            
         } catch (error) {
-            
+            this.logger.error(error.message)
             if(error.routine=='_bt_check_unique'){
                 return new Error("Email already in use!").message     
                 

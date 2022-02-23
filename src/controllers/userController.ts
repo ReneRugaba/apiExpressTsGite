@@ -13,11 +13,12 @@ export class UserController{
 
     constructor(logger:Logger){
         this.router = Router()
-        this.userService=new UserService()
+        this.userService=new UserService(logger)
         this.routesApp()
         this.logger= logger
     }
 
+    
     public index = async (req:Request,res:Response)=>{
         this.logger.info("route #index() start!")
         res.json(await this.userService.index())
@@ -31,7 +32,7 @@ export class UserController{
         
         const newUser = req["body"] as User
        
-       
+        this.logger.info("route #createUser(): User created with success!")
         res.send(await this.userService.createUser(newUser))
     }
 

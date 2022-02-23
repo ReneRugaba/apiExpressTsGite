@@ -1,0 +1,141 @@
+openapi: 3.0.0
+info:
+  title: Library API
+  description: Gite payment management
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Server dev development
+ 
+components:
+  schemas:
+    UserPdo:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+
+paths:
+  /users:
+    get:
+      summary: Returns a list of users.
+      tags:
+        - User
+      description: return all users.
+      responses:
+        '200':    # status code
+          description: A JSON object user names
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UserPdo'
+
+    post:
+      summary: Post new user.
+      tags:
+        - User
+      description: Post new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPdo'
+      responses:
+        '201':
+          description: User created!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPdo'
+        '500':
+          description: Internal server error
+
+
+  /users/{id}:
+    put:
+      summary: Update user.
+      tags:
+        - User
+      description: Update user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the user to return.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPdo'
+      responses:
+        '200':
+          description: User update
+        '500':
+          description: Internal server error
+  
+    delete:
+      summary: Delete user
+      tags:
+        - User
+      description: delete user
+      parameters:
+        - name: id
+          in: path
+          require: true
+          description: The Id of the user to return
+          schema:
+            type: integer
+            format: int64
+            minimun: 1
+      responses:
+        '200':
+          description: User deleted
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+    get:
+      summary: Get user by id
+      tags:
+        - User
+      description: Get user by id
+      parameters:
+        - name: id
+          in: path
+          require: true
+          description: The Id of the user to return
+          schema:
+            type: integer
+            format: int64
+            minimun: 1
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPdo'
+        '404':
+          description: User not found
+        '500':
+          description: Internal server erreur
+
+
+
+              

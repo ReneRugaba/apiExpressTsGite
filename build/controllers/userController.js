@@ -23,6 +23,7 @@ class UserController {
         });
         this.createUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const newUser = req["body"];
+            this.logger.info("route #createUser(): User created with success!");
             res.send(yield this.userService.createUser(newUser));
         });
         this.update = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -39,7 +40,7 @@ class UserController {
             this.router.delete('/:id', this.remove);
         };
         this.router = (0, express_1.Router)();
-        this.userService = new userService_1.UserService();
+        this.userService = new userService_1.UserService(logger);
         this.routesApp();
         this.logger = logger;
     }
