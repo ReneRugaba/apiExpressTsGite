@@ -1,8 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const userRepository_1 = require("./../repository/userRepository");
 const typeorm_1 = require("typeorm");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 class UserService {
     userRepository;
     logger;
@@ -13,12 +17,16 @@ class UserService {
     index = async () => {
         return await this.userRepository.find();
     };
+    findOneByUserName = async (userName) => {
+        return await this.userRepository.findOne({ email: userName });
+    };
     findOneById = async (id) => {
         return await this.userRepository.findOne(id);
     };
     createUser = async (user) => {
         try {
             this.logger.info("user created in service");
+            user = { ...user, password: await bcrypt_1.default.hash(user.password, 10) };
             return await this.userRepository.save(user);
         }
         catch (error) {

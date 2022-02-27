@@ -30,30 +30,12 @@ const env = __importStar(require("dotenv"));
 const tslog_1 = require("tslog");
 const fs_1 = require("fs");
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
-const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const yamljs_1 = __importDefault(require("yamljs"));
 const helmet_1 = __importDefault(require("helmet"));
 const swaggerDocument = yamljs_1.default.load(__dirname + '/swagger.yaml');
 function logToTransport(logObject) {
     (0, fs_1.appendFileSync)("logs.log", JSON.stringify(logObject) + "\n");
 }
-const options = {
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "Library API",
-            version: "1.0.0",
-            description: "Gite payment management"
-        },
-        servers: [
-            {
-                url: "http://127.0.0.1:8080/api"
-            }
-        ],
-    },
-    apis: ["./controllers/*.js"]
-};
-const specs = (0, swagger_jsdoc_1.default)(options);
 const logger = new tslog_1.Logger();
 logger.attachTransport({
     silly: logToTransport,

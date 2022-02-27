@@ -16,6 +16,7 @@ class UserDto {
     firstName;
     lastName;
     email;
+    password;
 }
 __decorate([
     (0, class_validator_1.IsInt)(),
@@ -36,5 +37,10 @@ __decorate([
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], UserDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.Matches)('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'),
+    (0, class_validator_1.Length)(8),
+    __metadata("design:type", String)
+], UserDto.prototype, "password", void 0);
 exports.UserDto = UserDto;
 //# sourceMappingURL=user.dto.js.map

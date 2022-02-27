@@ -2,7 +2,7 @@ import User  from "../entity/user";
 import { UserRepository } from "./../repository/userRepository";
 import { DeleteResult, getCustomRepository, UpdateResult } from "typeorm";
 import { Logger } from "tslog";
-
+import bcrypt from "bcrypt"
 
 export class UserService {
     private userRepository:UserRepository
@@ -18,6 +18,10 @@ export class UserService {
         return await this.userRepository.find()
     }
 
+    public findOneByUserName=async(userName:string)=>{
+        return await this.userRepository.findOne({email:userName})
+    }
+
     public findOneById:(id:number)=>Promise<User|undefined> =async (id:number)=>{
         return await this.userRepository.findOne(id)
     }
@@ -25,6 +29,7 @@ export class UserService {
     public createUser:(user:User)=>Promise<User|undefined|string> = async (user:User):Promise<User|undefined|string>=>{
         try {
             this.logger.info("user created in service")
+            user={...user,password:await bcrypt.hash(user.password,10)}
             return await this.userRepository.save(user)
         } catch (error) {
             this.logger.error(error.message)

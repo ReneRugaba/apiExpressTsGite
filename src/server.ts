@@ -14,33 +14,9 @@ const swaggerDocument= YAML.load(__dirname+'/swagger.yaml');
 
 
 
-
-
-
 function logToTransport(logObject: ILogObject) {
   appendFileSync("logs.log", JSON.stringify(logObject) + "\n");
 }
-
-const options ={
-    definition:{
-        openapi:"3.0.0",
-        info:{
-            title:"Library API",
-            version:"1.0.0",
-            description:"Gite payment management"
-        },
-        servers:[
-            {
-                url:"http://127.0.0.1:8080/api"
-            }
-        ],
-    },
-    apis:["./controllers/*.js"]
-}
-
-const specs = swaggerJsdoc(options)
-
-
 
 
 const logger: Logger = new Logger();
