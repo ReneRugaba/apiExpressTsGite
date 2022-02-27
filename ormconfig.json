@@ -1,0 +1,14 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "database": "gite",
+    "username": "postgres",
+    "password": "root",
+    "port": 5432,
+    "entities": ["./build/entity/*.js"],
+    "migrations":["./build/migration/**/*{.js,.ts}"],
+    "synchronize": false,
+    "cli": {
+        "migrationsDir": "src/migration"
+    }
+}

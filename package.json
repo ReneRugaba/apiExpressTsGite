@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./build/server.js",
-    "build": "tsc"
+    "start": "node ./build/server.js",
+    "start:dev":"nodemon ./build/server.js",
+    "build": "tsc",
+    "migration:generate":"ts-node ./node_modules/typeorm/cli.js migration:generate -n migrationName -p",
+    "migration:run":"ts-node --transpile-only ./node_modules/typeorm/cli.js migration:run"
   },
   "author": "",
   "license": "ISC",

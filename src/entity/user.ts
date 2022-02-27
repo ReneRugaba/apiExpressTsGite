@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity("userapp")
 @Unique(["email"])
-export class User {
+export default class User {
     @PrimaryGeneratedColumn()
     id:number
 

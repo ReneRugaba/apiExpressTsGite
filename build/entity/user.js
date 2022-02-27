@@ -9,9 +9,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
 const typeorm_1 = require("typeorm");
 let User = class User {
+    id;
+    firstName;
+    lastName;
+    email;
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
@@ -33,5 +36,5 @@ User = __decorate([
     (0, typeorm_1.Entity)("userapp"),
     (0, typeorm_1.Unique)(["email"])
 ], User);
-exports.User = User;
+exports.default = User;
 //# sourceMappingURL=user.js.map

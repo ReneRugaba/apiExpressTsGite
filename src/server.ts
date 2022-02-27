@@ -8,6 +8,7 @@ import { appendFileSync } from "fs";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import YAML from "yamljs"
+import helmet from 'helmet';
 
 const swaggerDocument= YAML.load(__dirname+'/swagger.yaml');
 
@@ -68,6 +69,7 @@ class Server {
         this.app.use("/docs-api",swaggerUi.serve,swaggerUi.setup(swaggerDocument))
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended:true}))
+        this.app.use(helmet())
         this.app.use(cors({
             allowedHeaders: [
                 'Origin',
@@ -89,16 +91,7 @@ class Server {
    
 
     public routesApp = async () =>{
-        await createConnection({
-            type: "postgres",
-            host: process.env.LOCALHOST_APP,
-            database: process.env.DATA_BASE,
-            username: process.env.USER_DB,
-            password: process.env.PASS_WORD,
-            port: Number(process.env.PORT_DB),
-            entities: ['./build/entity/*.js'],
-            synchronize: true
-        })
+        await createConnection()
         this.userController=new UserController(logger)
         
         this.app.get('/',(req: Request,resp:Response)=>{

@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { Logger } from "tslog";
-import { User } from "../entity/user";
+import  User  from "../entity/user";
 import { UserService } from "./../service/userService";
 
 

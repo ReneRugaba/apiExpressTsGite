@@ -1,4 +1,4 @@
-import { User } from "../entity/user";
+import User  from "../entity/user";
 import { UserRepository } from "./../repository/userRepository";
 import { DeleteResult, getCustomRepository, UpdateResult } from "typeorm";
 import { Logger } from "tslog";
