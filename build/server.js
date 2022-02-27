@@ -64,7 +64,8 @@ class Server {
                 'Accept',
                 'X-Access-Token',
             ],
-            origin: "*"
+            origin: "*",
+            credentials: true
         }));
         this.configPortApp();
         this.routesApp();
@@ -77,7 +78,7 @@ class Server {
         this.userController = new userController_1.UserController(logger);
         this.app.get('/', (req, resp) => {
             logger.warn("I am a warn log with a json object:", { foo: "bar" });
-            resp.send("hello");
+            resp.redirect("/docs-api");
         });
         this.app.use('/api/v1/users/', this.userController.router);
     };

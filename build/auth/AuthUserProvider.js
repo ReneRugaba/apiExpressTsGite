@@ -8,28 +8,36 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const privateKey_1 = require("./privateKey");
 class AuthUserProvider {
     userService;
-    constructor(userService) {
+    logger;
+    constructor(userService, logger) {
         this.userService = userService;
+        this.logger = logger;
     }
     verifyUser = async (user) => {
         let userDb = await this.userService.findOneByUserName(user.userName);
         if (user && userDb && await bcrypt_1.default.compare(user.password, userDb.password)) {
+            this.logger.info("User Authentified!");
             return userDb;
         }
         else {
-            return null;
+            this.logger.error("User not Authentified!");
+            return undefined;
         }
     };
     getToken = (user) => {
         const payload = { username: user.email, id: user.id };
         if (privateKey_1.privateKey) {
             return {
-                access_token: jsonwebtoken_1.default.sign(payload, privateKey_1.privateKey)
+                access_token: jsonwebtoken_1.default.sign(payload, privateKey_1.privateKey, { expiresIn: 30 * 60 })
             };
         }
         else {
-            return null;
+            return undefined;
         }
+    };
+    getUserByToken = (req, res, next) => {
+        console.log(req.headers.authorization?.split(" ")[1]);
+        next();
     };
 }
 exports.default = AuthUserProvider;

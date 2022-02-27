@@ -6,8 +6,19 @@ info:
 servers:
   - url: http://localhost:8000/api/v1
     description: Server dev development
- 
+
+
+
+# Schemas of all app
 components:
+
+  # auth bearer
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     UserPdo:
       type: object
@@ -25,15 +36,58 @@ components:
         email:
           type: string
 
+    TokenPdo:
+      type: object
+      required:
+        - access_token
+      properties:
+        access_token:
+          type: string
+    
+    LoginPdo:
+      type: object
+      required:
+        - userName
+        - password
+      properties:
+        userName:
+          type: string
+        password:
+          type: string
+
+  
+      
+# Route app
 paths:
+  /users/login:
+    post:
+      summary: Return token if user is in database
+      tags: 
+        - Login
+      description: return a token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginPdo'
+      responses:
+        '200':
+          description: A Json token object 
+          content:
+             application/json:
+                schema:
+                  $ref: '#/components/schemas/TokenPdo'
   /users:
     get:
+      security:
+        - bearerAuth: [] 
       summary: Returns a list of users.
       tags:
         - User
       description: return all users.
       responses:
-        '200':    # status code
+        '200':    
           description: A JSON object user names
           content:
             application/json:

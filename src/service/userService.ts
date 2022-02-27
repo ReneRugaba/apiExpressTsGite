@@ -3,6 +3,7 @@ import { UserRepository } from "./../repository/userRepository";
 import { DeleteResult, getCustomRepository, UpdateResult } from "typeorm";
 import { Logger } from "tslog";
 import bcrypt from "bcrypt"
+import { UserDto } from "src/DTO/user.dto";
 
 export class UserService {
     private userRepository:UserRepository
@@ -26,7 +27,7 @@ export class UserService {
         return await this.userRepository.findOne(id)
     }
 
-    public createUser:(user:User)=>Promise<User|undefined|string> = async (user:User):Promise<User|undefined|string>=>{
+    public createUser:(user:UserDto)=>Promise<User|undefined|string> = async (user:User):Promise<User|undefined|string>=>{
         try {
             this.logger.info("user created in service")
             user={...user,password:await bcrypt.hash(user.password,10)}

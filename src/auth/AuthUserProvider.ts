@@ -4,19 +4,22 @@ import { UserService } from "src/service/userService";
 import jwt from "jsonwebtoken"
 import bcrypt from 'bcrypt'
 import { privateKey } from "./privateKey";
+import { Logger } from "tslog";
+import { NextFunction, Request, Response } from "express";
 
 
 export default class AuthUserProvider {
 
-    constructor(private readonly userService:UserService){}
+    constructor(private readonly userService:UserService,private readonly logger:Logger){}
 
     verifyUser=async (user:LoginDto)=>{
         let userDb:User|undefined= await this.userService.findOneByUserName(user.userName)
-
         if(user && userDb && await bcrypt.compare(user.password,userDb.password)){
+            this.logger.info("User Authentified!")
            return userDb
         }else{
-            return null
+            this.logger.error("User not Authentified!")
+            return undefined
         }
     }
 
@@ -25,11 +28,16 @@ export default class AuthUserProvider {
 
         if(privateKey){
             return {
-                access_token:jwt.sign(payload,privateKey)
+                access_token:jwt.sign(payload,privateKey,{ expiresIn: 30 * 60 })
             }
         }else{
-            return null
+            return undefined
         }
+    }
+
+    getUserByToken=(req:Request,res:Response,next:NextFunction)=>{
+        console.log(req.headers.authorization?.split(" ")[1])
+        next()
     }
 
 

@@ -1,4 +1,7 @@
 import { Request, Response, Router } from "express";
+import AuthUserProvider from "./../auth/AuthUserProvider";
+import LoginDto from "src/DTO/login.dto";
+import { UserDto } from "src/DTO/user.dto";
 import { Logger } from "tslog";
 import  User  from "../entity/user";
 import { UserService } from "./../service/userService";
@@ -10,12 +13,27 @@ export class UserController{
     public router:Router;
     private userService:UserService
     private logger:Logger
+    private auth: AuthUserProvider
 
     constructor(logger:Logger){
         this.router = Router()
         this.userService=new UserService(logger)
+        this.auth = new AuthUserProvider(this.userService,this.logger)
         this.routesApp()
         this.logger= logger
+    }
+
+    public login= async (req:Request,res:Response)=>{
+        this.logger.info("login start!")
+        let user= req.body as LoginDto
+        let userAuth= await this.auth.verifyUser(user)
+        if(userAuth){
+            this.logger.info("user wil be auth in controller!")
+            const token = this.auth.getToken(userAuth)
+            res.status(200).json(token)
+        }else{
+            res.status(500).json(new Error("Unknow user!").message)
+        }
     }
 
     
@@ -30,7 +48,7 @@ export class UserController{
 
     public createUser =async (req:Request,res:Response)=>{
         
-        const newUser = req["body"] as User
+        const newUser = req["body"] as UserDto
        
         this.logger.info("route #createUser(): User created with success!")
         res.send(await this.userService.createUser(newUser))
@@ -46,7 +64,8 @@ export class UserController{
 
 
     public routesApp =()=>{
-        this.router.get('/',this.index)
+        this.router.post('/login',this.login)
+        this.router.get('/',this.auth.getUserByToken,this.index)
         this.router.get('/:id',this.getOneById)
         this.router.post('/',this.createUser)
         this.router.put('/:id',this.update)
